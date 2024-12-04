@@ -6,7 +6,7 @@
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:00:18 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/04 19:48:17 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/04 23:24:49 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,56 +14,90 @@
 
 #include <stdio.h>
 
-char    *return_next_line(char *buf, char *line)
+static char    *return_next_line(char *buf, char *line)
 {
     char   *next_line;
+    char   *temp;
+    
     if (!line)
-        return (ft_strdup(buf));
+    {
+        temp = ft_strdup(buf);
+        free(buf);
+        return (temp);
+    }
     next_line = ft_strjoin(line, buf);
     free(line);
+    free(buf);
     return (next_line);
+}
+
+static char   *method(char **remaining, char **line)
+{
+    char    *c;
+    char    *temp;
+    
+    if (*remaining)
+    {
+        c = has_line_break(*remaining);
+        if (c)
+        {
+            *c = '\0';
+            *line = ft_strdup(*remaining);
+            temp = ft_strdup(c + 1);
+            free(remaining);
+            *remaining = temp;
+            return (*line);
+        }
+        *line = ft_strdup(*remaining);
+        free(*remaining);
+        *remaining = NULL;
+        return (*line);
+    }
 }
 
 char	*get_next_line(int fd)
 {
     static  char    *remaining;
     char	buf[BUFFER_SIZE + 1];
+    char    *buf2; 
     char	*line;
     int		ret;
     char    *c;
     char    *temp;
 
-    line = NULL;
+    t_gnl_buf *gnl_buf;
+
+    gnl_buf->preset_buffer = NULL;
+    gnl_buf->dynamic_buffer = NULL;
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    method(gnl_buf->static_buffer, gnl_buf->preset_buffer);
+    if (gnl_buf->static_buffer)
+        return (line);
 
 
-    if (remaining)
+
+        
+    while (1)
     {
-        c = ft_strchr(remaining, '\n');
+        ret = read(fd, buf, BUFFER_SIZE);
+        if (ret <= 0)
+            return (return_next_line(buf2, line));
+        buf[ret] = '\0';
+        if (!buf2)
+            buf2 = ft_strdup(buf);
+        else
+        {
+            temp = ft_strjoin(buf2, buf);
+            free(buf2);
+            buf2 = temp;
+        }
+        c = has_line_break(buf2);
         if (c)
         {
             *c = '\0';
-            line = ft_strdup(remaining);
-            temp = ft_strdup(c + 1);
-            free(remaining);
-            remaining = temp;
-            return (line);
+            remaining = ft_strdup(c + 1);
+            return (return_next_line(buf2, line));
         }
-        line = ft_strdup(remaining);
-        free(remaining);
-        remaining = NULL;
     }
-
-    ret = read(fd, buf, BUFFER_SIZE);
-    if (ret <= 0)
-        return (line);
-    buf[ret] = '\0';
-
-    c = ft_strchr(buf, '\n');
-    if (c)
-    {
-        *c = '\0';
-        remaining = ft_strdup(c + 1);
-        return (return_next_line(buf, line));
-    }
-    return (return_next_line(buf, line));
 }

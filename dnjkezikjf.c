@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   dnjkezikjf.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 17:06:13 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/04 22:32:27 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/04 22:00:03 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,13 +68,18 @@ char	*ft_strdup(const char *s)
 	return (newstr);
 }
 
-char	*has_line_break(char *s)
+char	*ft_strchr(const char *s, int c)
 {
-	while (*s)
+	int	i;
+
+	i = 0;
+	while (s[i])
 	{
-		if (*s == '\n')
-			return (s);
-		s++;
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
+		i++;
 	}
+	if ((char)c == '\0')
+		return ((char *)&s[i]);
 	return (NULL);
 }

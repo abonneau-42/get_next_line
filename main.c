@@ -9,19 +9,12 @@ int main() {
 
     if (!fd)
         return 1;
-
-    // while ((val = get_next_line(fd)))
-    // {
-    //     printf("%i: %s\n", num_line, val);
-    //     num_line++;
-    //     free(val);
-    // }
-
-    val = get_next_line(fd);
-    printf("%i: %s\n", num_line, val);
-            free(val);
-
-
+    while ((val = get_next_line(fd)))
+    {
+        printf("%i: %s\n", num_line, val);
+        num_line++;
+        free(val);
+    }
     close(fd);
     return 0;
 }
