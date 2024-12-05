@@ -6,7 +6,9 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#define BUFFER_SIZE 127
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 127
+#endif
 
 char	*get_next_line(int fd);
 size_t 	ft_strlen(const char *str);
@@ -20,6 +22,5 @@ typedef struct s_gnl_buf
         char    temp_buffer[BUFFER_SIZE + 1];
 		char    *dynamic_buffer;
 		char	*preset_buffer;
-		char	*static_buffer;
 }       t_gnl_buf;
 #endif

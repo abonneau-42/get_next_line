@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line-c.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 16:00:18 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/05 00:54:08 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/05 00:56:43 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static char    *return_next_line(char *buf, char *line)
     return (next_line);
 }
 
-static int  method(char **remaining, char **line)
+static char *method(char **remaining, char **line)
 {
     char    *c;
     char    *temp;
@@ -46,63 +46,54 @@ static int  method(char **remaining, char **line)
             temp = ft_strdup(c + 1);
             free(*remaining);
             *remaining = temp;
-            if (!temp)
-                return (1);
-            return (0);
+            //if (!temp)
+            //    return (-1);
+            //return (*line);
         }
         *line = ft_strdup(*remaining);
         free(*remaining);
         *remaining = NULL;
     }
-    return (0);
 }
 
 char	*get_next_line(int fd)
 {
     static  char    *remaining;
-    char	temp_buffer[BUFFER_SIZE + 1];
-    char    *dynamic_buffer; 
-    char	*preset_buffer;
+    char	buf[BUFFER_SIZE + 1];
+    char    *buf2; 
+    char	*line;
     int		ret;
     char    *c;
     char    *temp;
 
-    preset_buffer = NULL;
-    dynamic_buffer = NULL;
+    line = NULL;
+    buf2 = NULL;
     if (fd < 0 || BUFFER_SIZE <= 0)
         return (NULL);
-    if (!method(&remaining, &preset_buffer))
-    {
-        if (remaining)
-            return (preset_buffer);
-    }
-    else
-        return (NULL);
-
-
-
-
+    method(&remaining, &line);
+    if (remaining)
+        return (line);
     while (1)
     {
-        ret = read(fd, temp_buffer, BUFFER_SIZE);
+        ret = read(fd, buf, BUFFER_SIZE);
         if (ret <= 0)
-            return (return_next_line(dynamic_buffer, preset_buffer));
-        temp_buffer[ret] = '\0';
-        if (!dynamic_buffer)
-            dynamic_buffer = ft_strdup(temp_buffer);
-        else
-        {
-            temp = ft_strjoin(dynamic_buffer, temp_buffer);
-            free(dynamic_buffer);
-            dynamic_buffer = temp;
-        }
-        c = has_line_break(dynamic_buffer);
+            return (return_next_line(buf2, line));
+        buf[ret] = '\0';
+        if (!buf2)
+            buf2 = ft_strdup(buf);
+        if (!buf2)
+            return (NULL);
+        temp = ft_strjoin(buf2, buf);
+        free(buf2);
+        buf2 = temp;
+
+
+        c = has_line_break(buf2);
         if (c)
         {
             *c = '\0';
             remaining = ft_strdup(c + 1);
-            return (return_next_line(dynamic_buffer, preset_buffer));
+            return (return_next_line(buf2, line));
         }
     }
-    return (NULL);
 }

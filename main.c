@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 int main() {
-    int fd = open("bible.txt", O_RDONLY);
+    int fd = open("b.txt", O_RDONLY);
     char *val;
     int num_line = 0;
 
