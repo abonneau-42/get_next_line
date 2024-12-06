@@ -7,20 +7,14 @@
 #include <fcntl.h>
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 127
+# define BUFFER_SIZE 1000
 #endif
 
 char	*get_next_line(int fd);
-size_t 	ft_strlen(const char *str);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strdup(const char *s);
-char	*ft_strchr(const char *s, int c);
-char	*has_line_break(char *s);
+char	*get_line_break(char *s);
+char	*ft_strndup(const char *s, size_t n);
+size_t	ft_strlen(const char *s);
 
-typedef struct s_gnl_buf
-{
-        char    temp_buffer[BUFFER_SIZE + 1];
-		char    *dynamic_buffer;
-		char	*preset_buffer;
-}       t_gnl_buf;
 #endif

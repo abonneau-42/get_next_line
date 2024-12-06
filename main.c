@@ -11,10 +11,13 @@ int main() {
         return 1;
     while ((val = get_next_line(fd)))
     {
-        printf("%i: %s\n", num_line, val);
+        printf("%i: %s", num_line, val);
         num_line++;
         free(val);
     }
+    val = get_next_line(fd);
+    printf("%i: %s", num_line, val);
+
     close(fd);
     return 0;
 }

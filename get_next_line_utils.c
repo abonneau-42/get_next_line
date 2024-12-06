@@ -6,7 +6,7 @@
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 17:06:13 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/04 22:32:27 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/06 17:23:04 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,21 @@ char	*ft_strdup(const char *s)
 	return (newstr);
 }
 
-char	*has_line_break(char *s)
+
+char	*ft_strndup(const char *s, size_t n)
+{
+	char	*str;
+
+	str = (char *)malloc(n + 1);
+	if (!str)
+		return (NULL);
+	str[n] = '\0';
+	while (n--)
+		str[n] = s[n];
+	return (str);
+}
+
+char	*get_line_break(char *s)
 {
 	while (*s)
 	{

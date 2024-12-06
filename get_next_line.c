@@ -5,104 +5,66 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/04 16:00:18 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/05 00:54:08 by abonneau         ###   ########.fr       */
+/*   Created: 2024/12/06 17:19:07 by abonneau          #+#    #+#             */
+/*   Updated: 2024/12/06 19:16:55 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
 #include <stdio.h>
 
-static char    *return_next_line(char *buf, char *line)
+char *handle_line(char **remaining)
 {
-    char   *next_line;
-    char   *temp;
-    
-    if (!line)
-    {
-        temp = ft_strdup(buf);
-        free(buf);
-        return (temp);
-    }
-    next_line = ft_strjoin(line, buf);
-    free(line);
-    free(buf);
-    return (next_line);
+	char *tmp;
+	char *substr;
+	char *end_of_line;
+
+	if (!**remaining)
+	{
+		free(*remaining);
+		return (NULL);
+	}
+	end_of_line = get_line_break(*remaining);
+	if (end_of_line)
+	{
+		substr = ft_strndup(*remaining, end_of_line - *remaining + 1);
+		tmp = ft_strdup(end_of_line + 1);
+		free(*remaining);
+		if (!tmp)
+			return (NULL);
+		*remaining = tmp;
+		return (substr);
+	}
+	substr = ft_strdup(*remaining);
+	free(*remaining);
+	*remaining = NULL;
+	return (substr);
 }
 
-static int  method(char **remaining, char **line)
+char *get_next_line(int fd)
 {
-    char    *c;
-    char    *temp;
-    
-    if (*remaining)
-    {
-        c = has_line_break(*remaining);
-        if (c)
-        {
-            *c = '\0';
-            *line = ft_strdup(*remaining);
-            temp = ft_strdup(c + 1);
-            free(*remaining);
-            *remaining = temp;
-            if (!temp)
-                return (1);
-            return (0);
-        }
-        *line = ft_strdup(*remaining);
-        free(*remaining);
-        *remaining = NULL;
-    }
-    return (0);
-}
+	static char *remaining;
+	char buffer[BUFFER_SIZE + 1];
+	char *tmp;
+	int read_bytes;
 
-char	*get_next_line(int fd)
-{
-    static  char    *remaining;
-    char	temp_buffer[BUFFER_SIZE + 1];
-    char    *dynamic_buffer; 
-    char	*preset_buffer;
-    int		ret;
-    char    *c;
-    char    *temp;
-
-    preset_buffer = NULL;
-    dynamic_buffer = NULL;
-    if (fd < 0 || BUFFER_SIZE <= 0)
-        return (NULL);
-    if (!method(&remaining, &preset_buffer))
-    {
-        if (remaining)
-            return (preset_buffer);
-    }
-    else
-        return (NULL);
-
-
-
-
-    while (1)
-    {
-        ret = read(fd, temp_buffer, BUFFER_SIZE);
-        if (ret <= 0)
-            return (return_next_line(dynamic_buffer, preset_buffer));
-        temp_buffer[ret] = '\0';
-        if (!dynamic_buffer)
-            dynamic_buffer = ft_strdup(temp_buffer);
-        else
-        {
-            temp = ft_strjoin(dynamic_buffer, temp_buffer);
-            free(dynamic_buffer);
-            dynamic_buffer = temp;
-        }
-        c = has_line_break(dynamic_buffer);
-        if (c)
-        {
-            *c = '\0';
-            remaining = ft_strdup(c + 1);
-            return (return_next_line(dynamic_buffer, preset_buffer));
-        }
-    }
-    return (NULL);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	if (!remaining)
+		remaining = ft_strdup("");
+	if (!remaining)
+		return (NULL);
+	while (get_line_break(remaining) == NULL)
+	{
+		read_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (read_bytes <= 0)
+		    break;
+		buffer[read_bytes] = '\0';
+		tmp = ft_strjoin(remaining, buffer);
+		free(remaining);
+		if (!tmp)
+			return (NULL);
+		remaining = tmp;
+	}
+	return (handle_line(&remaining));
 }
