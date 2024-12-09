@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dnjkezikjf.c                                       :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus.c                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 17:06:13 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/04 22:00:03 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/09 20:24:19 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -68,18 +68,26 @@ char	*ft_strdup(const char *s)
 	return (newstr);
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_strndup(const char *s, size_t n)
 {
-	int	i;
+	char	*str;
 
-	i = 0;
-	while (s[i])
+	str = (char *)malloc(n + 1);
+	if (!str)
+		return (NULL);
+	str[n] = '\0';
+	while (n--)
+		str[n] = s[n];
+	return (str);
+}
+
+char	*get_line_break(char *s)
+{
+	while (*s)
 	{
-		if (s[i] == (char)c)
-			return ((char *)&s[i]);
-		i++;
+		if (*s == '\n')
+			return (s);
+		s++;
 	}
-	if ((char)c == '\0')
-		return ((char *)&s[i]);
 	return (NULL);
 }

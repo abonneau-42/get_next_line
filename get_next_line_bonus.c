@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 17:19:07 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/09 20:08:24 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/09 20:23:10 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	*handle_free(char **ptr)
 {
@@ -62,26 +62,26 @@ static char	*handle_line(char **remaining)
 
 char	*get_next_line(int fd)
 {
-	static char	*remaining;
+	static char	*remaining[OPEN_MAX];
 	char		buffer[BUFFER_SIZE + 1];
 	int			read_bytes;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	if (!remaining)
-		remaining = ft_strdup("");
-	if (!remaining)
+	if (!remaining[fd])
+		remaining[fd] = ft_strdup("");
+	if (!remaining[fd])
 		return (NULL);
-	while (get_line_break(remaining) == NULL)
+	while (get_line_break(remaining[fd]) == NULL)
 	{
 		read_bytes = read(fd, buffer, BUFFER_SIZE);
 		if (read_bytes == 0)
 			break ;
 		if (read_bytes == -1)
-			return (handle_free(&remaining));
+			return (handle_free(&remaining[fd]));
 		buffer[read_bytes] = '\0';
-		if (!has_join_remaining(&remaining, buffer))
+		if (!has_join_remaining(&remaining[fd], buffer))
 			return (NULL);
 	}
-	return (handle_line(&remaining));
+	return (handle_line(&remaining[fd]));
 }

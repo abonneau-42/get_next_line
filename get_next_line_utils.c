@@ -6,7 +6,7 @@
 /*   By: abonneau <abonneau@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 17:06:13 by abonneau          #+#    #+#             */
-/*   Updated: 2024/12/06 17:23:04 by abonneau         ###   ########.fr       */
+/*   Updated: 2024/12/09 17:33:27 by abonneau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ char	*ft_strdup(const char *s)
 	newstr[i] = '\0';
 	return (newstr);
 }
-
 
 char	*ft_strndup(const char *s, size_t n)
 {

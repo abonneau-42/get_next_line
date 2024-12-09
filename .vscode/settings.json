@@ -1,8 +1,8 @@
 {
 	"files.associations": {
+		"file_utils.h": "c",
+		"typeinfo": "c",
 		"get_next_line.h": "c",
-		"stdio.h": "c",
-		"fcntl.h": "c",
-		"unistd.h": "c"
+		"stdio.h": "c"
 	}
 }
